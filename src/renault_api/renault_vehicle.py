@@ -486,10 +486,22 @@ class RenaultVehicle:
             response.get_attributes(schemas.KamereonVehicleChargeModeActionDataSchema),
         )
 
-    async def set_charge_start(self) -> models.KamereonVehicleChargingStartActionData:
+    async def set_charge_start(
+        self, when: Optional[datetime] = None
+    ) -> models.KamereonVehicleChargingStartActionData:
         """Start vehicle charge."""
         # await self.warn_on_method("set_charge_start")
         attributes = {"action": "start"}
+
+        if when:
+            if not isinstance(when, datetime):  # pragma: no cover
+                raise TypeError(
+                    "`when` should be an instance of datetime.datetime, not {}".format(
+                        when.__class__
+                    )
+                )
+            start_date_time = when.astimezone(timezone.utc).strftime(PERIOD_TZ_FORMAT)
+            attributes["startDateTime"] = start_date_time
 
         response = await self.session.set_vehicle_action(
             account_id=self.account_id,

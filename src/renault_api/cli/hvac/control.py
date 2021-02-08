@@ -28,7 +28,7 @@ async def start(
     ctx_data: Dict[str, Any],
     *,
     temperature: int,
-    at: Optional[str],
+    at: Optional[str] = None,
     websession: aiohttp.ClientSession,
 ) -> None:
     """Start air conditioning."""
